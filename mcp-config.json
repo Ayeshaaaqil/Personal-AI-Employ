@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "AI_Employee_Vault"],
+      "env": {}
+    },
+    "email": {
+      "command": "python",
+      "args": ["mcp-servers/email_mcp_server.py"],
+      "env": {}
+    },
+    "linkedin": {
+      "command": "python",
+      "args": ["mcp-servers/linkedin_mcp_server.py"],
+      "env": {}
+    },
+    "facebook": {
+      "command": "python",
+      "args": ["mcp-servers/facebook_mcp_server.py"],
+      "env": {}
+    },
+    "odoo": {
+      "command": "python",
+      "args": ["mcp-servers/odoo_mcp_server.py"],
+      "env": {}
+    },
+    "audit": {
+      "command": "python",
+      "args": ["mcp-servers/audit_mcp_server.py"],
+      "env": {}
+    },
+    "whatsapp": {
+      "command": "python",
+      "args": ["mcp-servers/whatsapp_mcp_server.py"],
+      "env": {}
+    }
+  }
+}

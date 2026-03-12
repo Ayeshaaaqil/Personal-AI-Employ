@@ -1,0 +1,43 @@
+# Odoo ERP - Docker Compose Configuration
+# Note: Requires Docker Desktop with WSL2 backend enabled
+# Alternative: Use mock mode - edit odoo_config.json and set "use_mock": true
+
+services:
+  odoo:
+    image: odoo:16.0
+    container_name: ai_employee_odoo
+    restart: unless-stopped
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo_secret_password
+    depends_on:
+      - db
+    networks:
+      - odoo_network
+
+  db:
+    image: postgres:15
+    container_name: ai_employee_odoo_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo_secret_password
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    networks:
+      - odoo_network
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:
+
+networks:
+  odoo_network:

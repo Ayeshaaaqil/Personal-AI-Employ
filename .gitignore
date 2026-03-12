@@ -1,0 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment Variables (IMPORTANT!)
+.env
+.env.local
+.env.*.local
+
+# Credentials
+credentials.json
+token.json
+*_token.json
+linkedin_config.json
+odoo_config.json
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Session data (browser automation)
+*-session/
+linkedin-session/
+facebook-session/
+instagram-session/
+whatsapp-session/
+
+# Obsidian
+.obsidian/
+
+# Docker
+odoo-db-data/
+odoo-web-data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Test files
+test_*.py
+*_test.py
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MCP Server
+mcp-server/
+*.sock

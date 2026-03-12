@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "skills": {
+    "browsing-with-playwright": {
+      "source": "bilalmk/todo_correct",
+      "sourceType": "github",
+      "computedHash": "f73daf75e38650c202e61f652a26578db157f8423e8bcf283bcd93b441641461"
+    },
+    "vault-operations": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "bronze-tier-implementation"
+    },
+    "email-mcp": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-implementation"
+    },
+    "gmail-watcher": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-implementation"
+    },
+    "whatsapp-watcher": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-implementation"
+    },
+    "scheduler": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-implementation"
+    },
+    "approval-workflow": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-implementation"
+    },
+    "linkedin-mcp": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "silver-tier-linkedin-implementation"
+    },
+    "facebook-integration": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "gold-tier-implementation"
+    },
+    "instagram-integration": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "gold-tier-implementation"
+    },
+    "odoo-integration": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "gold-tier-implementation"
+    },
+    "ceo-briefing-generator": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "gold-tier-implementation"
+    },
+    "audit-logging": {
+      "source": "local",
+      "sourceType": "local",
+      "computedHash": "gold-tier-implementation"
+    }
+  }
+}

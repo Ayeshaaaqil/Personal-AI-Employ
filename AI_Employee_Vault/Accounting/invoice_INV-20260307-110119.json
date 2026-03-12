@@ -1,0 +1,8 @@
+{
+  "customer": "Client A",
+  "amount": 1500.0,
+  "description": "Consulting services",
+  "date": "2026-03-07T11:01:19.917383",
+  "status": "draft",
+  "invoice_number": "INV-20260307-110119"
+}

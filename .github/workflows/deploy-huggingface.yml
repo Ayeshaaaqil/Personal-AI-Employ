@@ -1,0 +1,50 @@
+# GitHub Actions Workflow for Deploying AI Employee to Hugging Face Spaces
+
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'platinum/**'
+      - 'web_dashboard/**'
+      - 'deployment/huggingface_space/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          lfs: false
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install huggingface_hub
+          pip install -r platinum/requirements.txt
+          pip install -r web_dashboard/requirements.txt
+      
+      - name: Deploy to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+          HF_USERNAME: ${{ secrets.HUGGINGFACE_USERNAME }}
+        run: |
+          python deployment/deploy_to_huggingface.py \
+            --repo ${HF_USERNAME}/ai-employee-platinum \
+            --token ${HF_TOKEN}
+      
+      - name: Deployment Complete
+        run: |
+          echo "✅ Deployment complete!"
+          echo "🚀 Your AI Employee is live at:"
+          echo "https://huggingface.co/spaces/${HF_USERNAME}/ai-employee-platinum"
