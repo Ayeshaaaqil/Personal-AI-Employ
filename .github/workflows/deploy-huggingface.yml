@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       hf_token:
-        description: 'Hugging Face Token'
+        description: 'Hugging Face Token (required)'
         required: true
 
 env:
@@ -15,30 +15,28 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: 📥 Checkout code
-      uses: actions/checkout@v4
-      with:
-        lfs: true
-    
-    - name: 🐍 Setup Python
+    - name: Checkout code
+      uses: actions/checkout@v5  # Updated to v5
+
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    
-    - name: 📦 Install dependencies
+
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install huggingface_hub gradio google-auth google-auth-oauthlib google-api-python-client playwright python-dotenv requests
-    
-    - name: 📋 Prepare deployment files
+        pip install huggingface_hub gradio==4.44.1 google-auth google-auth-oauthlib google-api-python-client playwright python-dotenv requests
+
+    - name: Prepare deployment files
       run: |
         mkdir -p deployment/huggingface_space
         cp web_dashboard/app.py deployment/huggingface_space/app.py
-        
-        cat > deployment/huggingface_space/requirements.txt << EOF
-        gradio>=4.0.0
+
+        cat > deployment/huggingface_space/requirements.txt << 'EOF'
+        gradio==4.44.1
         google-auth>=2.0.0
         google-auth-oauthlib>=1.0.0
         google-api-python-client>=2.0.0
@@ -46,7 +44,7 @@ jobs:
         python-dotenv>=1.0.0
         requests>=2.31.0
         EOF
-        
+
         cat > deployment/huggingface_space/README.md << 'EOF'
         ---
         title: AI Employee Dashboard
@@ -59,23 +57,42 @@ jobs:
         pinned: false
         license: mit
         ---
-        
+
         # 🤖 AI Employee Dashboard
-        
+
         **Your life and business on autopilot!**
-        
+
         Created by: **Ayesha Aaqil**
+
+        ## Features
+
+        - 📧 Email Management
+        - 💬 WhatsApp Integration
+        - 💼 LinkedIn Automation
+        - 📘 Facebook Monitoring
+        - 📋 Task Management
+        - 📊 CEO Briefings
+        - 🤖 AI Assistant Chat
         EOF
-    
-    - name: 🚀 Deploy to Hugging Face
+
+    - name: Deploy to Hugging Face
       env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN || github.event.inputs.hf_token }}
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        INPUT_HF_TOKEN: ${{ github.event.inputs.hf_token }}
       run: |
+        # Use secret if available, otherwise use input
+        TOKEN="${HF_TOKEN:-$INPUT_HF_TOKEN}"
+
+        if [ -z "$TOKEN" ]; then
+          echo "❌ Error: HF_TOKEN is required"
+          exit 1
+        fi
+
         python deployment/deploy_to_huggingface.py \
           --repo $HF_REPO \
-          --token $HF_TOKEN
-    
-    - name: ✅ Deployment complete
+          --token "$TOKEN"
+
+    - name: Deployment complete
       run: |
         echo "🎉 Deployment successful!"
         echo "🌐 Space URL: https://huggingface.co/spaces/$HF_REPO"

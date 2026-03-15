@@ -23,13 +23,15 @@ def main():
     if not token:
         print("❌ Error: Please provide --token or set HF_TOKEN environment variable")
         print("   Get token from: https://huggingface.co/settings/tokens")
+        print("\n   Or pass directly:")
+        print("   python deploy_to_huggingface.py --repo Ayesha-Aaqil/ai-employee --token hf_xxx")
         sys.exit(1)
     
     print("=" * 70)
     print("🚀 Deploying AI Employee to Hugging Face Spaces")
     print("=" * 70)
     print(f"📂 Repository: {args.repo}")
-    print(f"🔑 Token: {'✓' + token[:10]}...{token[-5:]}")
+    print(f"🔑 Token: {'✓' + token[:6]}...{token[-4:]}")
     print("=" * 70)
     
     # Login to Hugging Face
