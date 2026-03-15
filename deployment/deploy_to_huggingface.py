@@ -1,133 +1,212 @@
 """
-Deploy AI Employee Platinum Tier to Hugging Face Spaces
-
-Usage:
-    python deploy_to_huggingface.py --repo your-username/ai-employee-platinum
+Deploy AI Employee to Hugging Face Spaces
+Usage: python deploy_to_huggingface.py --repo Ayesha-Aaqil/ai-employee
 """
 
 import os
 import sys
-import argparse
 import subprocess
+import argparse
 from pathlib import Path
 from huggingface_hub import HfApi, login
-import shutil
-
-
-def deploy_to_spaces(repo_name: str, token: str):
-    """Deploy to Hugging Face Spaces"""
-    
-    # Login to Hugging Face
-    api = HfApi()
-    login(token=token)
-    
-    # Get current directory
-    current_dir = Path(__file__).parent.parent
-    
-    # Source files to copy
-    source_files = {
-        "deployment/huggingface_space/app.py": "app.py",
-        "deployment/huggingface_space/requirements.txt": "requirements.txt",
-        "platinum/huggingface_reasoning_engine.py": "platinum/huggingface_reasoning_engine.py",
-        "platinum/huggingface_agent.py": "platinum/huggingface_agent.py",
-        "platinum/prompt_templates.py": "platinum/prompt_templates.py",
-    }
-    
-    # Create temporary deployment directory
-    deploy_dir = current_dir / "deployment" / "hf_space_temp"
-    deploy_dir.mkdir(exist_ok=True)
-    
-    # Copy files
-    print("Copying files to deployment directory...")
-    for src, dst in source_files.items():
-        src_path = current_dir / src
-        dst_path = deploy_dir / dst
-        
-        if src_path.exists():
-            dst_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src_path, dst_path)
-            print(f"  ✓ {src} -> {dst}")
-        else:
-            print(f"  ✗ Source not found: {src}")
-    
-    # Copy README
-    readme_src = current_dir / "PLATINUM_README.md"
-    readme_dst = deploy_dir / "README.md"
-    if readme_src.exists():
-        shutil.copy2(readme_src, readme_dst)
-        print("  ✓ Copied README.md")
-    
-    # Create or update Space
-    print(f"\nCreating/updating Space: {repo_name}")
-    try:
-        api.create_repo(
-            repo_id=repo_name,
-            repo_type="space",
-            space_sdk="gradio",
-            exist_ok=True
-        )
-        print("  ✓ Space created/updated")
-    except Exception as e:
-        print(f"  ✗ Error creating space: {e}")
-        return False
-    
-    # Upload files
-    print("\nUploading files to Hugging Face Spaces...")
-    try:
-        api.upload_folder(
-            folder_path=str(deploy_dir),
-            repo_id=repo_name,
-            repo_type="space"
-        )
-        print("  ✓ Files uploaded successfully")
-    except Exception as e:
-        print(f"  ✗ Error uploading files: {e}")
-        return False
-    
-    # Cleanup
-    print("\nCleaning up...")
-    shutil.rmtree(deploy_dir)
-    
-    # Space URL
-    space_url = f"https://huggingface.co/spaces/{repo_name}"
-    print(f"\n✅ Deployment complete!")
-    print(f"🚀 Your AI Employee is live at: {space_url}")
-    print(f"\nNote: First deployment may take a few minutes to build.")
-    
-    return True
-
 
 def main():
-    parser = argparse.ArgumentParser(description="Deploy to Hugging Face Spaces")
-    parser.add_argument(
-        "--repo",
-        type=str,
-        required=True,
-        help="Repository name (username/repo-name)"
-    )
-    parser.add_argument(
-        "--token",
-        type=str,
-        default=None,
-        help="Hugging Face token (or set HF_TOKEN env var)"
-    )
-    
+    parser = argparse.ArgumentParser(description='Deploy to Hugging Face Spaces')
+    parser.add_argument('--repo', type=str, default='Ayesha-Aaqil/ai-employee',
+                       help='Hugging Face Space repo (username/repo-name)')
+    parser.add_argument('--token', type=str, default=None,
+                       help='Hugging Face token (or set HF_TOKEN env var)')
     args = parser.parse_args()
     
     # Get token
-    token = args.token or os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_TOKEN")
-    
+    token = args.token or os.getenv('HF_TOKEN')
     if not token:
-        print("❌ Error: Hugging Face token required")
-        print("   Set HF_TOKEN environment variable or use --token flag")
+        print("❌ Error: Please provide --token or set HF_TOKEN environment variable")
         print("   Get token from: https://huggingface.co/settings/tokens")
         sys.exit(1)
     
-    # Deploy
-    success = deploy_to_spaces(args.repo, token)
+    print("=" * 70)
+    print("🚀 Deploying AI Employee to Hugging Face Spaces")
+    print("=" * 70)
+    print(f"📂 Repository: {args.repo}")
+    print(f"🔑 Token: {'✓' + token[:10]}...{token[-5:]}")
+    print("=" * 70)
     
-    sys.exit(0 if success else 1)
+    # Login to Hugging Face
+    print("\n🔐 Logging in to Hugging Face...")
+    try:
+        login(token=token)
+        print("✅ Logged in successfully!")
+    except Exception as e:
+        print(f"❌ Login failed: {e}")
+        sys.exit(1)
+    
+    # Create Space if it doesn't exist
+    print(f"\n📦 Creating/verifying Space: {args.repo}...")
+    try:
+        api = HfApi()
+        username = args.repo.split('/')[0]
+        space_name = args.repo.split('/')[1]
+        
+        # Try to create space (will fail if exists, which is fine)
+        try:
+            api.create_repo(
+                repo_id=args.repo,
+                repo_type="space",
+                space_sdk="gradio",
+                space_hardware="cpu-basic",
+                exist_ok=True
+            )
+            print("✅ Space created successfully!")
+        except Exception as e:
+            if "You already created this repo" in str(e):
+                print("✅ Space already exists!")
+            else:
+                raise e
+        
+    except Exception as e:
+        print(f"❌ Error creating space: {e}")
+        sys.exit(1)
+    
+    # Prepare files for deployment
+    print("\n📁 Preparing files for deployment...")
+    
+    # Create deployment directory
+    deploy_dir = Path("deployment/huggingface_space")
+    deploy_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Copy main app
+    import shutil
+    shutil.copy("web_dashboard/app.py", deploy_dir / "app.py")
+    print("✅ Copied app.py")
+    
+    # Create requirements.txt for Space
+    requirements = """gradio>=4.0.0
+google-auth>=2.0.0
+google-auth-oauthlib>=1.0.0
+google-api-python-client>=2.0.0
+playwright>=1.40.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+"""
+    (deploy_dir / "requirements.txt").write_text(requirements)
+    print("✅ Created requirements.txt")
+    
+    # Create .env.example
+    env_example = """# Hugging Face Space Environment Variables
+HUGGINGFACE_TOKEN=your_hf_token
+VAULT_PATH=./AI_Employee_Vault
+
+# Gmail (optional)
+GMAIL_CREDENTIALS={"installed":{...}}
+
+# Other services (optional)
+FACEBOOK_ACCESS_TOKEN=your_token
+LINKEDIN_SESSION_PATH=./linkedin-session
+"""
+    (deploy_dir / ".env.example").write_text(env_example)
+    print("✅ Created .env.example")
+    
+    # Create README for Space
+    readme = """---
+title: AI Employee Dashboard
+emoji: 🤖
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: 4.44.1
+app_file: app.py
+pinned: false
+license: mit
+---
+
+# 🤖 AI Employee Dashboard
+
+**Your life and business on autopilot!**
+
+## Features
+
+- 📧 Email Management with Auto-Reply
+- 💬 WhatsApp Integration
+- 💼 LinkedIn Automation
+- 📘 Facebook Monitoring
+- 📋 Task Management
+- 📊 CEO Briefings
+- 🤖 AI Assistant Chat
+- ⚙️ Settings & Configuration
+
+## Created by
+
+**Ayesha Aaqil** - AI Automation Expert
+
+## Usage
+
+1. Login with your credentials (if required)
+2. Navigate through tabs
+3. Send emails, messages, post updates
+4. Monitor tasks and generate briefings
+
+## Privacy
+
+- All data is processed locally
+- No data is stored on Hugging Face
+- Session is not persisted
+
+## Support
+
+For issues or questions, please contact the developer.
+"""
+    (deploy_dir / "README.md").write_text(readme)
+    print("✅ Created README.md")
+    
+    # Upload to Hugging Face
+    print("\n📤 Uploading files to Hugging Face...")
+    try:
+        api.upload_folder(
+            folder_path=str(deploy_dir),
+            repo_id=args.repo,
+            repo_type="space",
+            commit_message="Deploy AI Employee Dashboard v1.0"
+        )
+        print("✅ Files uploaded successfully!")
+    except Exception as e:
+        print(f"❌ Upload failed: {e}")
+        sys.exit(1)
+    
+    # Get Space URL
+    space_url = f"https://huggingface.co/spaces/{args.repo}"
+    
+    print("\n" + "=" * 70)
+    print("🎉 DEPLOYMENT COMPLETE!")
+    print("=" * 70)
+    print(f"\n🌐 Your AI Employee is live at:")
+    print(f"   {space_url}")
+    print(f"\n⏳ Note: Space may take 2-5 minutes to build and start")
+    print(f"\n📊 Monitor build status: {space_url}/tree/main")
+    print("\n" + "=" * 70)
+    
+    # Create success file
+    success_file = Path("DEPLOYMENT_SUCCESS.txt")
+    success_file.write_text(f"""Deployment Successful!
+=====================
+
+Space URL: {space_url}
+Repository: {args.repo}
+Date: {__import__('datetime').datetime.now().isoformat()}
+
+Next Steps:
+1. Wait 2-5 minutes for build
+2. Visit {space_url}
+3. Test all features
+4. Share with team!
+
+Developed by: Ayesha Aaqil
+""")
+    print(f"✅ Created DEPLOYMENT_SUCCESS.txt")
+    
+    print("\n✨ Thank you for using AI Employee! ✨")
+    print("\n🚀 Share your dashboard: " + space_url)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
