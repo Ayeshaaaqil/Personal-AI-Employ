@@ -122,43 +122,26 @@ pinned: false
 license: mit
 ---
 
-# 🤖 AI Employee Dashboard
+# AI Employee Dashboard
 
 **Your life and business on autopilot!**
 
 ## Features
 
-- 📧 Email Management with Auto-Reply
-- 💬 WhatsApp Integration
-- 💼 LinkedIn Automation
-- 📘 Facebook Monitoring
-- 📋 Task Management
-- 📊 CEO Briefings
-- 🤖 AI Assistant Chat
-- ⚙️ Settings & Configuration
+- Email Management with Auto-Reply
+- WhatsApp Integration
+- LinkedIn Automation
+- Facebook Monitoring
+- Task Management
+- CEO Briefings
+- AI Assistant Chat
+- Settings & Configuration
 
 ## Created by
 
 **Ayesha Aaqil** - AI Automation Expert
-
-## Usage
-
-1. Login with your credentials (if required)
-2. Navigate through tabs
-3. Send emails, messages, post updates
-4. Monitor tasks and generate briefings
-
-## Privacy
-
-- All data is processed locally
-- No data is stored on Hugging Face
-- Session is not persisted
-
-## Support
-
-For issues or questions, please contact the developer.
 """
-    (deploy_dir / "README.md").write_text(readme)
+    (deploy_dir / "README.md").write_text(readme, encoding='utf-8')
     print("✅ Created README.md")
     
     # Upload to Hugging Face
