@@ -83,16 +83,22 @@ def main():
     print("✅ Copied app.py")
     
     # Create requirements.txt for Space
-    requirements = """gradio>=4.0.0
-google-auth>=2.0.0
-google-auth-oauthlib>=1.0.0
-google-api-python-client>=2.0.0
-playwright>=1.40.0
-python-dotenv>=1.0.0
-requests>=2.31.0
+    requirements = """# Hugging Face Spaces compatible dependencies
+gradio==4.44.1
+huggingface-hub==0.23.0
+google-auth==2.28.0
+google-auth-oauthlib==1.2.0
+google-api-python-client==2.118.0
+playwright==1.40.0
+python-dotenv==1.0.0
+requests==2.31.0
 """
     (deploy_dir / "requirements.txt").write_text(requirements)
     print("✅ Created requirements.txt")
+
+    # Create .python-version file
+    (deploy_dir / ".python-version").write_text("3.11\n")
+    print("✅ Created .python-version")
     
     # Create .env.example
     env_example = """# Hugging Face Space Environment Variables
@@ -120,11 +126,16 @@ sdk_version: 4.44.1
 app_file: app.py
 pinned: false
 license: mit
+python_version: 3.11
 ---
 
 # AI Employee Dashboard
 
 **Your life and business on autopilot!**
+
+## Python Runtime
+
+This Space runs on **Python 3.10** for compatibility.
 
 ## Features
 

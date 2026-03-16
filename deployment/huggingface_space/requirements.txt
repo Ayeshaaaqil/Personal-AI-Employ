@@ -1,7 +1,9 @@
-gradio>=4.0.0
-google-auth>=2.0.0
-google-auth-oauthlib>=1.0.0
-google-api-python-client>=2.0.0
-playwright>=1.40.0
-python-dotenv>=1.0.0
-requests>=2.31.0
+# Hugging Face Spaces compatible dependencies
+gradio==4.37.2
+huggingface-hub==0.23.0
+google-auth==2.28.0
+google-auth-oauthlib==1.2.0
+google-api-python-client==2.118.0
+playwright==1.40.0
+python-dotenv==1.0.0
+requests==2.31.0
