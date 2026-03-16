@@ -8,16 +8,11 @@ sdk_version: 4.44.1
 app_file: app.py
 pinned: false
 license: mit
-python_version: 3.10
 ---
 
 # AI Employee Dashboard
 
 **Your life and business on autopilot!**
-
-## Python Runtime
-
-This Space runs on **Python 3.10** for compatibility with audioop module.
 
 ## Features
 
