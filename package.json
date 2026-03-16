@@ -2,11 +2,6 @@
   "name": "ai-employee-vercel",
   "version": "1.0.0",
   "description": "AI Employee Dashboard on Vercel",
-  "scripts": {
-    "build": "pip install -r requirements.txt",
-    "start": "python vercel_app.py",
-    "vercel-build": "pip install -r requirements.txt"
-  },
   "author": "Ayesha Aaqil",
   "license": "MIT"
 }
