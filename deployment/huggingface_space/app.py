@@ -579,4 +579,5 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Hugging Face Spaces requires share=True or native sharing
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
+    # show_api=False prevents JSON schema parsing error
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=True, show_api=False)
